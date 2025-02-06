@@ -1,9 +1,6 @@
 package carrentalsystem;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +11,6 @@ public class RentalSystem {
         databaseHandler = new DatabaseHandler();
     }
 
-    // Метод для добавления нового автомобиля в базу данных
     public void addCar(Car car) {
         try {
             String insertQuery = "INSERT INTO cars (brand, model, car_type, is_available) VALUES (?, ?, ?, ?)";
@@ -34,7 +30,6 @@ public class RentalSystem {
         }
     }
 
-    // Метод для получения всех доступных автомобилей из базы данных
     public List<Car> getAvailableCars() {
         List<Car> availableCars = new ArrayList<>();
         try (Connection connection = DatabaseHandler.connect()) {
@@ -58,7 +53,6 @@ public class RentalSystem {
         return availableCars;
     }
 
-    // Метод для создания объекта автомобиля в зависимости от типа
     private Car createCar(String carType, String brand, String model) {
         switch (carType) {
             case "Sedan":
@@ -72,7 +66,6 @@ public class RentalSystem {
         }
     }
 
-    // Метод для обновления доступности автомобиля в базе данных
     public void updateCarAvailability(Car car, boolean isAvailable) {
         String query = "UPDATE cars SET is_available = ? WHERE brand = ? AND model = ?";
         try (Connection connection = DatabaseHandler.connect();
@@ -86,6 +79,18 @@ public class RentalSystem {
             car.setAvailable(isAvailable);  // Обновляем доступность автомобиля в объекте
         } catch (SQLException e) {
             System.err.println("Error updating car availability: " + e.getMessage());
+        }
+    }
+
+    public void removeCar(String model) {
+        String query = "DELETE FROM cars WHERE model = ?";
+        try (Connection connection = DatabaseHandler.connect();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, model);
+            preparedStatement.executeUpdate();
+            System.out.println("Car " + model + " removed.");
+        } catch (SQLException e) {
+            System.err.println("Error removing car: " + e.getMessage());
         }
     }
 }

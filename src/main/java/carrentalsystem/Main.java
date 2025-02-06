@@ -1,18 +1,13 @@
 package carrentalsystem;
-
 import java.util.List;
 import java.util.Scanner;
-import carrentalsystem.Car;
-import carrentalsystem.RentalSystem;
-import carrentalsystem.AdminPanel;
-import carrentalsystem.DatabaseHandler;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         RentalSystem rentalSystem = new RentalSystem();
-        AdminPanel adminPanel = new AdminPanel(rentalSystem);
-        UserManager userManager = new UserManager();
+        UserManager userManager = new UserManager();  // Создаем объект UserManager
+        AdminPanel adminPanel = new AdminPanel(rentalSystem, userManager);  // Передаем оба объекта в AdminPanel
 
         System.out.println("Enter username:");
         String username = scanner.nextLine();
@@ -30,7 +25,7 @@ public class Main {
         System.out.println("Welcome, " + user.getUsername() + " (" + user.getRole() + ")");
 
         if (user.getRole().equals("admin")) {
-            adminPanel.showMenu();
+            adminPanel.showMenu();  // Переход в меню администратора
         } else if (user.getRole().equals("customer")) {
             showCustomerMenu(rentalSystem, scanner);
         }
@@ -107,5 +102,4 @@ public class Main {
         }
         System.out.println("Car not found.");
     }
-
 }

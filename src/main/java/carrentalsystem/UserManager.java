@@ -6,7 +6,6 @@ import java.util.List;
 
 public class UserManager {
 
-    // Метод для аутентификации пользователя
     public User authenticateUser(String username, String password) {
         String query = "SELECT * FROM users WHERE username = ? AND password = ?";
         try (Connection connection = DatabaseHandler.connect();
@@ -32,7 +31,6 @@ public class UserManager {
         return null;
     }
 
-    // Метод для добавления нового пользователя
     public void addUser(String username, String password, String role) {
         String query = "INSERT INTO users (username, password, role) VALUES (?, ?, ?)";
         try (Connection connection = DatabaseHandler.connect();
@@ -45,6 +43,18 @@ public class UserManager {
             System.out.println("User added: " + username);
         } catch (SQLException e) {
             System.err.println("Error adding user: " + e.getMessage());
+        }
+    }
+
+    public void removeUser(String username) {
+        String query = "DELETE FROM users WHERE username = ?";
+        try (Connection connection = DatabaseHandler.connect();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, username);
+            preparedStatement.executeUpdate();
+            System.out.println("User " + username + " removed.");
+        } catch (SQLException e) {
+            System.err.println("Error removing user: " + e.getMessage());
         }
     }
 }
