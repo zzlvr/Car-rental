@@ -41,7 +41,7 @@ public class RentalSystem {
                     String model = resultSet.getString("model");
                     String carType = resultSet.getString("car_type");
 
-                    Car car = createCar(carType, brand, model);
+                    Car car = CarFactory.createCar(carType, brand, model);
                     if (car != null) {
                         availableCars.add(car);
                     }
@@ -51,19 +51,6 @@ public class RentalSystem {
             System.err.println("Error fetching available cars: " + e.getMessage());
         }
         return availableCars;
-    }
-
-    private Car createCar(String carType, String brand, String model) {
-        switch (carType) {
-            case "Sedan":
-                return new Sedan(brand, model);
-            case "SUV":
-                return new SUV(brand, model);
-            case "Truck":
-                return new Truck(brand, model);
-            default:
-                return null;
-        }
     }
 
     public void updateCarAvailability(Car car, boolean isAvailable) {
@@ -105,7 +92,7 @@ public class RentalSystem {
             if (resultSet.next()) {
                 String brand = resultSet.getString("brand");
                 String carType = resultSet.getString("car_type");
-                car = createCar(carType, brand, model);
+                car = CarFactory.createCar(carType, brand, model);
                 car.setAvailable(resultSet.getBoolean("is_available"));  // Устанавливаем статус доступности
             }
         } catch (SQLException e) {

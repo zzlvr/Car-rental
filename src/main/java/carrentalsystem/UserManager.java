@@ -32,6 +32,9 @@ public class UserManager {
     }
 
     public void addUser(String username, String password, String role) {
+        if (username == null || username.isEmpty() || password == null || password.isEmpty()) {
+            throw new IllegalArgumentException("Username and password cannot be empty.");
+        }
         String query = "INSERT INTO users (username, password, role) VALUES (?, ?, ?)";
         try (Connection connection = DatabaseHandler.connect();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -45,7 +48,6 @@ public class UserManager {
             System.err.println("Error adding user: " + e.getMessage());
         }
     }
-
     public void removeUser(String username) {
         String query = "DELETE FROM users WHERE username = ?";
         try (Connection connection = DatabaseHandler.connect();
@@ -57,4 +59,8 @@ public class UserManager {
             System.err.println("Error removing user: " + e.getMessage());
         }
     }
+    public void addUser(String username, String password) {
+        addUser(username, password, "customer");
+    }
+
 }

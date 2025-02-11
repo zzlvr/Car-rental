@@ -21,11 +21,11 @@ public class User {
         return username;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
     public String getRole() {
         return role;
+    }
+
+    public boolean checkPassword(String password) {
+        return this.password.equals(password);
     }
 }
