@@ -93,4 +93,25 @@ public class RentalSystem {
             System.err.println("Error removing car: " + e.getMessage());
         }
     }
+    public Car getCarByModel(String model) {
+        Car car = null;
+        String query = "SELECT * FROM cars WHERE model = ?";
+        try (Connection connection = DatabaseHandler.connect();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setString(1, model);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                String brand = resultSet.getString("brand");
+                String carType = resultSet.getString("car_type");
+                car = createCar(carType, brand, model);
+                car.setAvailable(resultSet.getBoolean("is_available"));  // Устанавливаем статус доступности
+            }
+        } catch (SQLException e) {
+            System.err.println("Error fetching car: " + e.getMessage());
+        }
+        return car;
+    }
+
 }

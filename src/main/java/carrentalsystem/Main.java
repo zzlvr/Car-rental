@@ -89,17 +89,19 @@ public class Main {
     private static void returnCar(RentalSystem rentalSystem, Scanner scanner) {
         System.out.println("Enter car model to return:");
         String modelToReturn = scanner.nextLine();
-        for (Car car : rentalSystem.getAvailableCars()) {
-            if (car.getModel().equalsIgnoreCase(modelToReturn)) {
-                if (car.isAvailable()) {
-                    System.out.println("This car has not been rented and cannot be returned.");
-                } else {
-                    rentalSystem.updateCarAvailability(car, true); // Обновляем доступность в базе данных
-                    System.out.println(car.getCarInfo() + " successfully returned.");
-                }
-                return;
-            }
+
+        Car car = rentalSystem.getCarByModel(modelToReturn);
+        if (car == null) {
+            System.out.println("Car not found.");
+            return;
         }
-        System.out.println("Car not found.");
+
+        if (car.isAvailable()) {
+            System.out.println("This car has not been rented and cannot be returned.");
+        } else {
+            rentalSystem.updateCarAvailability(car, true); // Обновляем доступность в базе данных
+            System.out.println(car.getCarInfo() + " successfully returned.");
+        }
     }
+
 }
