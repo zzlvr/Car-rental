@@ -52,106 +52,108 @@ Handles user interaction and menu navigation.
 
 Provides functionalities for administrators to manage users and cars.
 
-Object-Oriented Programming Concepts Demonstrated
+Object-Oriented Programming Concepts Used
 
-1. Classes and Objects
+Classes and Objects
 
-Car myCar = new Sedan("Toyota", "Camry");
-System.out.println(myCar.getCarInfo());
+The Car class is an abstract class, and Sedan, SUV, and Truck are objects of subclasses.
 
-2. Encapsulation
+Encapsulation
 
-public class User {
-    private String username;
-    private String password;
-    
-    public String getUsername() {
-        return username;
-    }
-    
-    public boolean checkPassword(String password) {
-        return this.password.equals(password);
-    }
-}
+Data fields in classes (e.g., brand, model, isAvailable) are private or protected.
 
-3. Inheritance
+Getter and setter methods control access to these fields (getBrand(), isAvailable(), etc.).
 
-public class Sedan extends Car {
-    public Sedan(String brand, String model) {
-        super(brand, model);
-    }
-}
+Inheritance
 
-4. Polymorphism (Method Overriding)
+The Car class is a parent class, and Sedan, SUV, and Truck inherit from it.
+
+They override methods such as rent() and getCarType().
+
+Polymorphism
+
+The getCarType() method is overridden in subclasses to return different car types.
+
+The CarFactory class (not shown in code but assumed) uses polymorphism to instantiate different car types.
+
+Method Overloading
+
+The addUser method in UserManager is overloaded:
+
+public void addUser(String username, String password, String role) { ... }
+public void addUser(String username, String password) { ... }
+
+Method Overriding
+
+The rent() method is overridden in subclasses of Car to provide specific rental behavior.
 
 @Override
-public String getCarType() {
-    return "SUV";
-}
+public void rent() throws CarNotAvailableException { ... }
 
-5. Method Overloading
+Exception Handling
 
-public void addUser(String username, String password) {
-    addUser(username, password, "customer");
-}
+Custom exception CarNotAvailableException is used to handle rental errors.
 
-6. Exception Handling
+SQL exceptions are handled properly in DatabaseHandler and UserManager.
 
-public void rent() throws CarNotAvailableException {
-    if (!isAvailable) {
-        throw new CarNotAvailableException("Car is not available.");
-    }
-    isAvailable = false;
-}
+SOLID Principles
 
-7. SOLID Principles
+Single Responsibility Principle (SRP)
 
-Single Responsibility Principle (SRP): Each class has a single responsibility (e.g., UserManager handles user-related tasks, RentalSystem handles cars).
+Each class has a single responsibility, e.g., UserManager only handles user-related tasks, RentalSystem only manages rental operations.
 
-Open/Closed Principle (OCP): The Car class allows extension (new car types) without modifying existing code.
+Open/Closed Principle (OCP)
 
-Liskov Substitution Principle (LSP): A Sedan, SUV, or Truck object can replace a Car object without breaking the system.
+The system is open for extension but closed for modification. New car types can be added by creating new subclasses of Car without modifying existing code.
 
-Interface Segregation Principle (ISP): Not applied explicitly but could be improved.
+Liskov Substitution Principle (LSP)
 
-Dependency Inversion Principle (DIP): RentalSystem depends on abstractions (Car and DatabaseHandler).
+Subclasses (Sedan, SUV, Truck) correctly extend Car and do not break the expected behavior when used polymorphically.
 
-8. Design Patterns
+Interface Segregation Principle (ISP)
 
-Factory Pattern (Used for creating car objects dynamically)
+The project follows ISP implicitly by avoiding large, unwieldy interfaces. Each class has a specific, clear role.
+
+Dependency Inversion Principle (DIP)
+
+RentalSystem depends on abstractions (Car) rather than specific implementations.
+
+If a dependency injection mechanism were used, it would further adhere to this principle.
+
+Design Patterns
+
+Factory Pattern
+
+A CarFactory (assumed but not provided) can be used to create car objects dynamically based on car type.
 
 public class CarFactory {
     public static Car createCar(String type, String brand, String model) {
-        switch (type.toLowerCase()) {
-            case "sedan": return new Sedan(brand, model);
-            case "suv": return new SUV(brand, model);
-            case "truck": return new Truck(brand, model);
-            default: return null;
-        }
+        return switch (type) {
+            case "SUV" -> new SUV(brand, model);
+            case "Sedan" -> new Sedan(brand, model);
+            case "Truck" -> new Truck(brand, model);
+            default -> null;
+        };
     }
 }
 
 Data Management
 
-The system uses PostgreSQL to store and manage data.
+Uses a PostgreSQL database to store cars and users.
 
-Car table stores car details (brand, model, car_type, is_available).
-
-User table stores user credentials (id, username, password, role).
-
-Methods like getAvailableCars(), updateCarAvailability(), and authenticateUser() interact with the database.
-
-Example Query
-
-SELECT * FROM cars WHERE is_available = TRUE;
+Implements methods to fetch available cars, update car availability, add/remove users, and authenticate users.
 
 Admin Panel (Optional Feature)
 
-The admin panel provides:
+Allows admin users to manage cars and users.
 
-Car management (add, remove cars).
+Uses AdminPanel class to provide functionalities such as:
 
-User management (add, remove users).
+Adding and removing cars.
+
+Adding and removing users.
+
+Viewing rented cars.
 
 Conclusion
 
